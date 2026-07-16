@@ -233,16 +233,16 @@
     // System Config / Coordinates Map (Arranged 4 columns side-by-side in a single row)
     const config = {
         nodes: {
-            n1: { id: 1, name: "Bot", x: 125, y: 210, r: 60, color: '#1d4ed8', text: '#1d4ed8' },
-            n2: { id: 2, name: "Virtual Agent", x: 375, y: 210, r: 60, color: '#0369a1', text: '#0369a1' },
-            n3: { id: 3, name: "Agentic VA", x: 625, y: 210, r: 60, color: '#0f766e', text: '#0f766e' },
-            n4: { id: 4, name: "AI Scoring", x: 875, y: 210, r: 60, color: '#4f46e5', text: '#4f46e5' }
+            n1: { id: 1, name: "Bot", x: 125, y: 195, r: 70, color: '#1d4ed8', text: '#1d4ed8' },
+            n2: { id: 2, name: "Virtual Agent", x: 375, y: 195, r: 70, color: '#0369a1', text: '#0369a1' },
+            n3: { id: 3, name: "Agentic VA", x: 625, y: 195, r: 70, color: '#0f766e', text: '#0f766e' },
+            n4: { id: 4, name: "AI Scoring", x: 875, y: 195, r: 70, color: '#4f46e5', text: '#4f46e5' }
         },
         sliders: {
-            s1: { id: 's1', val: 40, x: 35,  y: 35, w: 180, h: 70, title: "Bot Allocation", color: '#1d4ed8' },
-            s2: { id: 's2', val: 40, x: 285, y: 35, w: 180, h: 70, title: "Virtual Agent Allocation", color: '#0369a1' },
-            s3: { id: 's3', val: 20, x: 535, y: 35, w: 180, h: 70, title: "Agentic VA Allocation", color: '#0f766e' },
-            s4: { id: 's4', val: 50, x: 785, y: 35, w: 180, h: 70, title: "AI Scoring Ratio", color: '#4f46e5' }
+            s1: { id: 's1', val: 40, x: 35,  y: 30, w: 180, h: 65, title: "Bot Allocation", color: '#1d4ed8' },
+            s2: { id: 's2', val: 40, x: 285, y: 30, w: 180, h: 65, title: "Virtual Agent Allocation", color: '#0369a1' },
+            s3: { id: 's3', val: 20, x: 535, y: 30, w: 180, h: 65, title: "Agentic VA Allocation", color: '#0f766e' },
+            s4: { id: 's4', val: 50, x: 785, y: 30, w: 180, h: 65, title: "AI Scoring Ratio", color: '#4f46e5' }
         },
         colors: {
             bg: '#ffffff',
@@ -305,9 +305,9 @@
         // AI Scoring Tokens: ((Inbound Callers per Month * (AI Scoring slider bar % value)) / 20)
         cachedMetrics.c4Tokens = Math.round((total * (s4Val / 100)) / 20);
 
-        // Adjust circle radii dynamically based on their interaction metrics (40px to 65px range to fit single row nicely)
-        const baseRadius = 40;
-        const maxRadius = 65;
+        // Adjust circle radii dynamically based on their interaction metrics (60px to 80px range)
+        const baseRadius = 60;
+        const maxRadius = 80;
 
         config.nodes.n1.r = baseRadius + (s1Val / 100) * (maxRadius - baseRadius);
         config.nodes.n2.r = baseRadius + (s2Val / 100) * (maxRadius - baseRadius);
@@ -474,33 +474,29 @@
             ctx.arc(node.x, node.y, Math.max(5, node.r - 6), 0, Math.PI * 2);
             ctx.stroke();
 
-            // Texts inside circles
+            // Texts inside circles - redesigned for high legibility and breathing room
             ctx.textAlign = 'center';
-            const scaleFactor = node.r / 75; // baseline scale helper
+            const scaleFactor = node.r / 70; // Optimized scale factor for increased radius
             
-            // Circle Title
-            ctx.font = `bold ${Math.max(9, Math.round(13 * scaleFactor))}px sans-serif`;
+            // Circle Title (e.g. "BOT")
+            ctx.font = `bold ${Math.max(12, Math.round(14 * scaleFactor))}px sans-serif`;
             ctx.fillStyle = node.text;
-            ctx.fillText(node.name.toUpperCase(), node.x, node.y - (20 * scaleFactor));
+            ctx.fillText(node.name.toUpperCase(), node.x, node.y - (22 * scaleFactor));
 
-            // Label: Processed
-            ctx.font = `${Math.max(6, Math.round(8 * scaleFactor))}px sans-serif`;
-            ctx.fillStyle = config.colors.textMuted;
-            ctx.fillText("INTERACTIONS", node.x, node.y - (5 * scaleFactor));
-
-            // Value: Processed Number
-            ctx.font = `bold ${Math.max(10, Math.round(14 * scaleFactor))}px sans-serif`;
+            // Main Value (e.g. "4,000")
+            ctx.font = `bold ${Math.max(16, Math.round(20 * scaleFactor))}px sans-serif`;
             ctx.fillStyle = config.colors.textMain;
-            ctx.fillText(Math.round(val).toLocaleString(), node.x, node.y + (8 * scaleFactor));
+            ctx.fillText(Math.round(val).toLocaleString(), node.x, node.y - (2 * scaleFactor));
 
-            // Label: % of total
-            ctx.font = `${Math.max(6, Math.round(8 * scaleFactor))}px sans-serif`;
+            // Main Label (e.g. "interactions") - in lowercase for elegant readability
+            ctx.font = `${Math.max(8, Math.round(10 * scaleFactor))}px sans-serif`;
             ctx.fillStyle = config.colors.textMuted;
-            ctx.fillText("% OF SYSTEM", node.x, node.y + (22 * scaleFactor));
+            ctx.fillText("interactions", node.x, node.y + (12 * scaleFactor));
 
-            // Value: % calculated Ratio
-            ctx.font = `bold ${Math.max(9, Math.round(12 * scaleFactor))}px sans-serif`;
-            ctx.fillText(pct.toFixed(1) + '%', node.x, node.y + (35 * scaleFactor));
+            // Allocation Percentage (e.g. "40.0% Share") - uses matching node color theme
+            ctx.font = `bold ${Math.max(10, Math.round(12 * scaleFactor))}px sans-serif`;
+            ctx.fillStyle = node.color;
+            ctx.fillText(pct.toFixed(1) + '% Share', node.x, node.y + (30 * scaleFactor));
         });
 
         // Render Individual Token Badges in a single row below the circles
@@ -512,10 +508,10 @@
         ];
 
         tokensData.forEach(({ node, tokens, label }) => {
-            const badgeW = 140;
-            const badgeH = 38;
+            const badgeW = 180; // Sized up to perfectly align with sliders width (180px)
+            const badgeH = 48;  // Height increased from 38px to 48px
             const badgeX = node.x - (badgeW / 2);
-            const badgeY = 310; // Placed evenly below all circles
+            const badgeY = 315; // Placed evenly below all circles
 
             // Draw card container
             ctx.fillStyle = '#f8fafc';
@@ -527,69 +523,24 @@
             ctx.fillStyle = node.color;
             roundRect(ctx, badgeX, badgeY + 4, 3, badgeH - 8, 1.5, true, false);
 
-            // Title
+            // Title (Font size and margins increased)
             ctx.textAlign = 'left';
             ctx.fillStyle = config.colors.textMuted;
-            ctx.font = 'bold 8px sans-serif';
-            ctx.fillText(label, badgeX + 12, badgeY + 14);
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText(label, badgeX + 14, badgeY + 18);
 
-            // Value
+            // Value (Font size and margins increased)
             ctx.fillStyle = config.colors.textMain;
-            ctx.font = 'bold 12px sans-serif';
-            ctx.fillText(Math.round(tokens).toLocaleString(), badgeX + 12, badgeY + 29);
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText(Math.round(tokens).toLocaleString(), badgeX + 14, badgeY + 36);
         });
 
-        // Clean descriptive metric titles below the badges (Row alignment)
-        const total = parseFloat(totalInput.value) || 0;
-        ctx.textAlign = 'center';
-        ctx.font = 'bold 11px sans-serif';
-
-        // Column 1 Label (Bot)
-        if (cachedMetrics.c1Processed >= 0) {
-            ctx.fillStyle = config.colors.exit;
-            ctx.fillText(`Bot Contained`, config.nodes.n1.x, 370);
-            ctx.font = '10px sans-serif';
-            ctx.fillStyle = config.colors.textMain;
-            const c1ExitPct = total > 0 ? (cachedMetrics.c1Processed / total) * 100 : 0;
-            ctx.fillText(`${Math.round(cachedMetrics.c1Processed).toLocaleString()} (${c1ExitPct.toFixed(1)}%)`, config.nodes.n1.x, 384);
-        }
-
-        // Column 2 Label (VA)
-        if (cachedMetrics.c2Processed >= 0) {
-            ctx.fillStyle = config.colors.exit;
-            ctx.fillText(`Virtual Agent`, config.nodes.n2.x, 370);
-            ctx.font = '10px sans-serif';
-            ctx.fillStyle = config.colors.textMain;
-            const c2ExitPct = total > 0 ? (cachedMetrics.c2Processed / total) * 100 : 0;
-            ctx.fillText(`${Math.round(cachedMetrics.c2Processed).toLocaleString()} (${c2ExitPct.toFixed(1)}%)`, config.nodes.n2.x, 384);
-        }
-
-        // Column 3 Label (Agentic)
-        if (cachedMetrics.c3Processed >= 0) {
-            ctx.fillStyle = config.colors.resolved;
-            ctx.fillText(`Agentic Resolved`, config.nodes.n3.x, 370);
-            ctx.font = '10px sans-serif';
-            ctx.fillStyle = config.colors.textMain;
-            const c3ExitPct = total > 0 ? (cachedMetrics.c3Processed / total) * 100 : 0;
-            ctx.fillText(`${Math.round(cachedMetrics.c3Processed).toLocaleString()} (${c3ExitPct.toFixed(1)}%)`, config.nodes.n3.x, 384);
-        }
-
-        // Column 4 Label (Scoring)
-        if (cachedMetrics.c4Processed >= 0) {
-            ctx.fillStyle = '#4f46e5';
-            ctx.fillText(`AI Scored`, config.nodes.n4.x, 370);
-            ctx.font = '10px sans-serif';
-            ctx.fillStyle = config.colors.textMain;
-            const c4ExitPct = total > 0 ? (cachedMetrics.c4Processed / total) * 100 : 0;
-            ctx.fillText(`${Math.round(cachedMetrics.c4Processed).toLocaleString()} (${c4ExitPct.toFixed(1)}%)`, config.nodes.n4.x, 384);
-        }
-
-        // Total Token Badge - Center of the bottom row (y: 430)
+        // Total Token Badge - Center of the bottom row (y: 410)
         const totalTokens = cachedMetrics.c1Tokens + cachedMetrics.c2Tokens + cachedMetrics.c3Tokens + cachedMetrics.c4Tokens;
-        const totalBadgeW = 240;
-        const totalBadgeH = 46;
-        const totalBadgeX = 500 - (totalBadgeW / 2); // Perfectly centered on the bottom row
-        const totalBadgeY = 430;
+        const totalBadgeW = 280; // Scaled up width for improved legibility
+        const totalBadgeH = 54;  // Scaled up height for robust sizing
+        const totalBadgeX = 500 - (totalBadgeW / 2); // Center-aligned horizontally
+        const totalBadgeY = 410;
 
         // Draw pill container
         ctx.fillStyle = '#f8fafc';
@@ -604,13 +555,13 @@
         // Print Badge Title
         ctx.textAlign = 'left';
         ctx.fillStyle = config.colors.textMuted;
-        ctx.font = 'bold 9px sans-serif';
-        ctx.fillText("TOTAL TOKENS CONSUMED", totalBadgeX + 16, totalBadgeY + 16);
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillText("TOTAL TOKENS CONSUMED", totalBadgeX + 18, totalBadgeY + 18);
 
         // Print output Value
         ctx.fillStyle = config.colors.textMain;
-        ctx.font = 'bold 15px sans-serif';
-        ctx.fillText(Math.round(totalTokens).toLocaleString(), totalBadgeX + 16, totalBadgeY + 35);
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillText(Math.round(totalTokens).toLocaleString(), totalBadgeX + 18, totalBadgeY + 41);
 
         requestAnimationFrame(draw);
     }
